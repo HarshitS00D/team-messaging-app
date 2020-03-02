@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, Button, Icon, Segment, Popup, Dimmer, Form, Message } from 'semantic-ui-react';
-import axios from 'axios';
+import axios from '../axios';
 import MessageList from './messageList';
 import socket from '../socket';
 
@@ -29,7 +29,7 @@ class ChatBox extends React.Component {
 	};
 
 	onAddPeopleSubmit = async () => {
-		let res = await axios.post('http://localhost:4000/user/addUser', {
+		let res = await axios.post('/addUser', {
 			username: this.state.addUsername,
 			channelId: this.state.selectedChannel._id
 		});

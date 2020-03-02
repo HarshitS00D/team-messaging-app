@@ -3,7 +3,7 @@ import { Button, Dimmer, Segment, Form, Icon, Input, Header, Loader, Container }
 import { Link } from 'react-router-dom';
 import ChannelList from './channelList';
 import ChatBox from './chatBox';
-import axios from 'axios';
+import axios from '../axios';
 import history from '../history';
 
 class Home extends React.Component {
@@ -30,7 +30,7 @@ class Home extends React.Component {
 	};
 
 	onCreateChannelSubmit = async () => {
-		let res = await axios.post('http://localhost:4000/create-channel', {
+		let res = await axios.post('/create-channel', {
 			name: this.state.newChannelName,
 			description: this.state.newChannelDescription,
 			createdBy: this.state.user_id
@@ -46,7 +46,7 @@ class Home extends React.Component {
 	};
 
 	getChannels = async () => {
-		let res = await axios.get(`http://localhost:4000/user/get-channels?id=${this.state.user_id}`);
+		let res = await axios.get(`/user/get-channels?id=${this.state.user_id}`);
 		this.setState({ channels: res.data });
 	};
 
@@ -57,7 +57,7 @@ class Home extends React.Component {
 
 	componentDidMount = async () => {
 		if (this.state.user_id) {
-			let res = await axios.get(`http://localhost:4000/get-user?id=${this.state.user_id}`);
+			let res = await axios.get(`/get-user?id=${this.state.user_id}`);
 			if (res.data) {
 				this.setState({ user: res.data, isLogged: true, isLoading: false });
 				this.getChannels();
