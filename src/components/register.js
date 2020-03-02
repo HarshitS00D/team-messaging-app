@@ -15,13 +15,13 @@ class Register extends React.Component {
     }
 
     onInputChange = (e, { name, value }) => {
-        this.setState({ [name]: value, ['error_' + name]: undefined });
+        this.setState({ [name]: value.trim(), ['error_' + name]: undefined });
 
     }
 
     onSubmit = async () => {
         if (this.validate()) {
-            await axios.post('https://team-messaging-api.herokuapp.com/register', { email: this.state.email, username: this.state.username, password: this.state.password, region: this.state.region });
+            await axios.post('http://localhost:4000/register', { email: this.state.email, username: this.state.username, password: this.state.password, region: this.state.region });
             this.props.history.push('/login');
         }
         else console.log("error");
@@ -62,7 +62,7 @@ class Register extends React.Component {
     };
 
     usernameValidator = username => {
-        if (username === "" || !/^[a-z0-9_-]{4,}$/.test(username)) return false;
+        if (username === "" || !/^[a-zA-Z0-9_-]{4,}$/.test(username)) return false;
         return true;
     };
 

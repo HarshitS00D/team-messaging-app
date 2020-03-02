@@ -1,18 +1,18 @@
 import React from 'react';
-import MessageItem from './messageItem';
 import { Item } from 'semantic-ui-react';
 
 const MessageList = ({ messages }) => {
-    const renderedList = messages.map(message => {
-        return (
-            <MessageItem
-                message={message}
-            />
-        );
-    });
-
-    return <Item.Group divided>{renderedList} </Item.Group>
-
-}
+	return (
+		<Item.Group divided>
+			{messages.map((message, i) => {
+				return (
+					<Item key={i}>
+						<Item.Content> {message.text}</Item.Content>
+					</Item>
+				);
+			})}
+		</Item.Group>
+	);
+};
 
 export default MessageList;
