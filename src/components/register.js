@@ -21,7 +21,7 @@ class Register extends React.Component {
 
     onSubmit = async () => {
         if (this.validate()) {
-            await axios.post('http://localhost:4000/register', { email: this.state.email, username: this.state.username, password: this.state.password, region: this.state.region });
+            await axios.post('https://team-messaging-api.herokuapp.com/register', { email: this.state.email, username: this.state.username, password: this.state.password, region: this.state.region });
             this.props.history.push('/login');
         }
         else console.log("error");
