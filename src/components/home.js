@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Dimmer, Segment, Form, Icon, Input, Header, Loader } from 'semantic-ui-react';
+import { Button, Dimmer, Segment, Form, Icon, Input, Header, Loader, Container } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import ChannelList from './channelList';
 import ChatBox from './chatBox';
 import axios from 'axios';
@@ -137,7 +138,14 @@ class Home extends React.Component {
                 </div>
             );
         else return (
-            <div> Please Login or Signup First</div>
+            <Container style={{ marginTop: '20px' }}>
+                    <Link to="/login">
+                        <Button primary>Login</Button>
+                    </Link>
+                    <Link to="/register">
+                        <Button secondary>register</Button>
+                    </Link>
+                </Container>
         )
     }
 };
