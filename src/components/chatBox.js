@@ -29,7 +29,7 @@ class ChatBox extends React.Component {
 	};
 
 	onAddPeopleSubmit = async () => {
-		let res = await axios.post('/addUser', {
+		let res = await axios.post('/user/addUser', {
 			username: this.state.addUsername,
 			channelId: this.state.selectedChannel._id
 		});
