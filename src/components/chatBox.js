@@ -27,7 +27,7 @@ class ChatBox extends React.Component {
     }
 
     onAddPeopleSubmit = async () => {
-        let res = await axios.post('http://localhost:4000/user/addUser', { username: this.state.addUsername, channelId: this.props.selectedChannel._id })
+        let res = await axios.post('https://team-messaging-api.herokuapp.com/user/addUser', { username: this.state.addUsername, channelId: this.props.selectedChannel._id })
         this.setState({ addMessage: res.data.message })
         console.log(res);
     }
@@ -45,7 +45,7 @@ class ChatBox extends React.Component {
 
     componentDidMount = () => {
         console.log("mounted");
-        socket = io('localhost:4000');
+        socket = io('https://team-messaging-api.herokuapp.com');
         socket.emit('join', { userId: this.props.user._id, username: this.props.user.username, channelId: this.props.selectedChannel._id }, () => {
 
         });
