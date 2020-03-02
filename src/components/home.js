@@ -29,7 +29,7 @@ class Home extends React.Component {
     }
 
     onCreateChannelSubmit = async () => {
-        let res = await axios.post('http://localhost:4000/create-channel', { name: this.state.newChannelName, description: this.state.newChannelDescription, createdBy: this.state.user_id })
+        let res = await axios.post('https://team-messaging-api.herokuapp.com/create-channel', { name: this.state.newChannelName, description: this.state.newChannelDescription, createdBy: this.state.user_id })
         this.setState({ newChannelName: '', newChannelDescription: '' });
         this.handleClose();
         this.getChannels();
@@ -41,7 +41,7 @@ class Home extends React.Component {
     }
 
     getChannels = async () => {
-        let res = await axios.get(`http://localhost:4000/user/get-channels?id=${this.state.user_id}`);
+        let res = await axios.get(`https://team-messaging-api.herokuapp.com/user/get-channels?id=${this.state.user_id}`);
         this.setState({ channels: res.data });
     }
 
@@ -54,7 +54,7 @@ class Home extends React.Component {
     componentDidMount = async () => {
         if (this.state.user_id) {
 
-            let res = await axios.get(`http://localhost:4000/get-user?id=${this.state.user_id}`);
+            let res = await axios.get(`https://team-messaging-api.herokuapp.com/get-user?id=${this.state.user_id}`);
             if (res.data) {
                 this.setState({ user: res.data, isLogged: true, isLoading: false });
                 this.getChannels();
