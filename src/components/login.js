@@ -16,7 +16,7 @@ class Login extends React.Component {
 
     onSubmit = async () => {
         if (this.validate()) {
-            let res = await axios.post('http://localhost:4000/login', { username: this.state.username, password: this.state.password });
+            let res = await axios.post('https://team-messaging-api.herokuapp.com/login', { username: this.state.username, password: this.state.password });
             if (res.data.length) {
                 sessionStorage.setItem('userid', res.data[0]._id);
                 this.props.history.push('/');
