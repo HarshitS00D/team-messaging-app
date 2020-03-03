@@ -1,5 +1,5 @@
 import React from 'react';
-import { Item } from 'semantic-ui-react';
+import { Item, Label } from 'semantic-ui-react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
 const MessageList = ({ messages }) => {
@@ -10,7 +10,11 @@ const MessageList = ({ messages }) => {
 					return (
 						<Item key={i}>
 							<Item.Content>
-								<b style={{ color: '#316991' }}> {message.username} </b> : {message.text}
+								<b style={{ color: '#316991' }}> {message.username} </b> : {message.message}
+								<Label size="mini" style={{ marginLeft: '10px' }}>
+									{' '}
+									{message.timestamp}{' '}
+								</Label>
 							</Item.Content>
 						</Item>
 					);

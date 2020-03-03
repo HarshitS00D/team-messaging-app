@@ -56,6 +56,10 @@ class ChatBox extends React.Component {
 	};
 
 	componentDidMount = () => {
+		axios.get(`/user/get-posts?channelId=${this.state.selectedChannel._id}`).then((result) => {
+			this.setState({ messages: result.data });
+		});
+
 		socket.emit('join', {
 			userId: this.props.user._id,
 			username: this.props.user.username,
@@ -64,16 +68,16 @@ class ChatBox extends React.Component {
 
 		socket.on('new_message_broadcast', (message) => {
 			this.setState({ messages: [ ...this.state.messages, message ] });
-			console.log(message);
 		});
 	};
 
-	// componentDidUpdate = (prevProps) => {
-	// 	console.log(prevProps, this.props);
-	// 	if (prevProps.selectedChannel._id !== this.state.selectedChannel._id) {
-	// 		this.setState({ messages: [] });
-	// 	}
-	// };
+	componentDidUpdate = (prevProps, prevState) => {
+		if (prevState.selectedChannel._id !== this.state.selectedChannel._id) {
+			axios.get(`/user/get-posts?channelId=${this.state.selectedChannel._id}`).then((result) => {
+				this.setState({ messages: result.data });
+			});
+		}
+	};
 
 	static getDerivedStateFromProps = (props, state) => {
 		if (props.selectedChannel._id !== state.selectedChannel._id) {
