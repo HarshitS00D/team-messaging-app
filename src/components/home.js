@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dimmer, Segment, Form, Icon, Input, Header, Loader, Container } from 'semantic-ui-react';
+import { Button, Dimmer, Segment, Form, Icon, Input, Header, Loader, Container, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import ChannelList from './channelList';
 import ChatBox from './chatBox';
@@ -14,6 +14,7 @@ class Home extends React.Component {
 		isLogged: false,
 		channels: [],
 		selectedChannel: null,
+		newChannelMessage: 'Create Channel',
 		newChannelName: '',
 		newChannelDescription: ''
 	};
@@ -22,7 +23,7 @@ class Home extends React.Component {
 	handleClose = () => this.setState({ active: false });
 
 	onInputChange = (e, { name, value }) => {
-		this.setState({ [name]: value });
+		this.setState({ [name]: value, newChannelMessage: 'Create Channel' });
 	};
 
 	onCreateChannel = () => {
@@ -30,15 +31,19 @@ class Home extends React.Component {
 	};
 
 	onCreateChannelSubmit = async () => {
-		let res = await axios.post('/create-channel', {
-			name: this.state.newChannelName,
-			description: this.state.newChannelDescription,
-			createdBy: this.state.user_id
-		});
-		this.setState({ newChannelName: '', newChannelDescription: '' });
-		this.handleClose();
-		this.getChannels();
-		console.log(res);
+		if (this.state.newChannelName && this.state.newChannelDescription) {
+			let res = await axios.post('/create-channel', {
+				name: this.state.newChannelName,
+				description: this.state.newChannelDescription,
+				createdBy: this.state.user_id
+			});
+			this.setState({ newChannelName: '', newChannelDescription: '' });
+			this.handleClose();
+			this.getChannels();
+			console.log(res);
+		} else {
+			this.setState({ newChannelMessage: 'Enter Channel Name & Channel Description' });
+		}
 	};
 
 	onChannelSelect = (channel) => {
@@ -100,6 +105,7 @@ class Home extends React.Component {
 
 					<Dimmer active={active} onClickOutside={this.handleClose} page>
 						<Form style={{ width: '500px' }}>
+							<Message info content={this.state.newChannelMessage} />
 							<Form.Field
 								name="newChannelName"
 								control={Input}
@@ -115,8 +121,7 @@ class Home extends React.Component {
 								onChange={this.onInputChange}
 							/>
 							<Button primary onClick={this.onCreateChannelSubmit}>
-								{' '}
-								Create{' '}
+								Create
 							</Button>
 						</Form>
 					</Dimmer>

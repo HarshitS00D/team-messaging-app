@@ -3,22 +3,11 @@ import { Item } from 'semantic-ui-react';
 import ChannelItem from './channelItem';
 
 const ChannelList = ({ channels, onChannelSelect }) => {
-    const renderedList = channels.map(channel => {
-        return (
-            <ChannelItem
-                key={channel._id}
-                channel={channel}
-                onChannelSelect={onChannelSelect}
-            />
-            // <Item>
-            //     <Item.Content> {channel.name} </Item.Content>
-            // </Item>
-        );
-    });
+	const renderedList = channels.map((channel) => {
+		return <ChannelItem key={channel._id} channel={channel} onChannelSelect={onChannelSelect} />;
+	});
 
-    return <Item.Group divided>{renderedList}</Item.Group>
-}
+	return <Item.Group divided>{renderedList}</Item.Group>;
+};
 
-
-
-export default ChannelList; 
+export default ChannelList;

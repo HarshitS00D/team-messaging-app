@@ -29,12 +29,15 @@ class ChatBox extends React.Component {
 	};
 
 	onAddPeopleSubmit = async () => {
-		let res = await axios.post('/user/addUser', {
-			username: this.state.addUsername,
-			channelId: this.state.selectedChannel._id
-		});
-		this.setState({ addMessage: res.data.message });
-		//console.log(res);
+		if (this.state.addUsername) {
+			let res = await axios.post('/user/addUser', {
+				username: this.state.addUsername,
+				channelId: this.state.selectedChannel._id
+			});
+			this.setState({ addMessage: res.data.message });
+		} else {
+			this.setState({ addMessage: 'Enter a Username' });
+		}
 	};
 
 	sendMessage = (event) => {
@@ -107,28 +110,29 @@ class ChatBox extends React.Component {
 								onChange={this.onInputChange}
 							/>
 							<Button primary onClick={this.onAddPeopleSubmit}>
-								{' '}
-								Add{' '}
+								Add
 							</Button>
 						</Form>
 					</Dimmer>
 					<div style={{ position: 'absolute', top: '10px', width: '96%' }}>
 						<Segment>
 							{this.state.selectedChannel.name}
-							<Popup
-								content="add people"
-								trigger={
-									<Button
-										circular
-										icon="add"
-										style={{ float: 'right', padding: '5px' }}
-										onClick={this.onAddPeople}
-									/>
-								}
-								inverted
-								offset="0, 20px"
-								position="bottom center"
-							/>
+							{this.state.selectedChannel.createdBy === this.props.user._id ? (
+								<Popup
+									content="add people"
+									trigger={
+										<Button
+											circular
+											icon="add"
+											style={{ float: 'right', padding: '5px' }}
+											onClick={this.onAddPeople}
+										/>
+									}
+									inverted
+									offset="0, 20px"
+									position="bottom center"
+								/>
+							) : null}
 						</Segment>
 					</div>
 					<div>
