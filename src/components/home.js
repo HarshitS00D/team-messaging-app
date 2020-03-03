@@ -128,7 +128,11 @@ class Home extends React.Component {
 
 					<Segment.Group compact style={{ width: '30%', height: '600px', float: 'left' }}>
 						<Segment placeholder>
-							<ChannelList channels={this.state.channels} onChannelSelect={this.onChannelSelect} />
+							<ChannelList
+								channels={this.state.channels}
+								onChannelSelect={this.onChannelSelect}
+								style={{ height: '600px' }}
+							/>
 						</Segment>
 					</Segment.Group>
 

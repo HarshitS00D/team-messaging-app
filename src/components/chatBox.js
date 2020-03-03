@@ -64,7 +64,7 @@ class ChatBox extends React.Component {
 
 		socket.on('new_message_broadcast', (message) => {
 			this.setState({ messages: [ ...this.state.messages, message ] });
-			//console.log(message);
+			console.log(message);
 		});
 	};
 
@@ -135,7 +135,15 @@ class ChatBox extends React.Component {
 							) : null}
 						</Segment>
 					</div>
-					<div>
+					<div
+						style={{
+							top: '80px',
+							height: '75%',
+							width: '96%',
+							position: 'absolute',
+							overflow: 'auto'
+						}}
+					>
 						<MessageList messages={this.state.messages} />
 					</div>
 					<div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
