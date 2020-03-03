@@ -1,5 +1,17 @@
 import React from 'react';
-import { Button, Dimmer, Segment, Form, Icon, Input, Header, Loader, Container, Message } from 'semantic-ui-react';
+import {
+	Button,
+	Dimmer,
+	Segment,
+	Form,
+	Icon,
+	Input,
+	Header,
+	Loader,
+	Container,
+	Message,
+	Image
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import ChannelList from './channelList';
 import ChatBox from './chatBox';
@@ -87,16 +99,30 @@ class Home extends React.Component {
 			return (
 				<div style={{ marginTop: '100px' }}>
 					<Segment style={{ height: '80px' }}>
-						<Header style={{ float: 'left' }}> Welcome, {this.state.user.username} </Header>
+						<Header style={{ float: 'left', padding: '5px', fontSize: '20px' }}>
+							<Image circular src="https://react.semantic-ui.com/images/avatar/large/jenny.jpg" />
+							{this.state.user.username}
+						</Header>
 						<Button
 							icon="log out"
 							onClick={this.logout}
 							content="LOGOUT"
-							style={{ position: 'absolute', right: '10px' }}
+							style={{
+								position: 'absolute',
+								marginTop: '9px',
+								right: '10px',
+								backgroundColor: '#435055',
+								color: '#fff'
+							}}
 						/>
 					</Segment>
 
-					<Button primary animated onClick={this.onCreateChannel} style={{ display: 'block' }}>
+					<Button
+						positive
+						animated
+						onClick={this.onCreateChannel}
+						style={{ display: 'block', color: 'white' }}
+					>
 						<Button.Content visible> Create Channel </Button.Content>
 						<Button.Content hidden>
 							<Icon name="add" />
@@ -126,8 +152,16 @@ class Home extends React.Component {
 						</Form>
 					</Dimmer>
 
-					<Segment.Group compact style={{ width: '30%', height: '600px', float: 'left' }}>
-						<Segment placeholder>
+					<Segment.Group
+						compact
+						style={{
+							width: '25%',
+							float: 'left',
+							overflowY: 'scroll',
+							overflowX: 'auto'
+						}}
+					>
+						<Segment placeholder style={{ height: '600px', fontWeight: 'bold', fontSize: '16px' }}>
 							<ChannelList
 								channels={this.state.channels}
 								onChannelSelect={this.onChannelSelect}
@@ -136,7 +170,7 @@ class Home extends React.Component {
 						</Segment>
 					</Segment.Group>
 
-					<Segment placeholder style={{ width: '70%', height: '600px', float: 'left' }}>
+					<Segment placeholder style={{ width: '75%', height: '600px', float: 'left' }}>
 						{this.state.selectedChannel ? (
 							<ChatBox selectedChannel={this.state.selectedChannel} user={this.state.user} />
 						) : null}

@@ -3,6 +3,7 @@ import { Input, Button, Icon, Segment, Popup, Dimmer, Form, Message } from 'sema
 import axios from '../axios';
 import MessageList from './messageList';
 import socket from '../socket';
+import { animateScroll } from 'react-scroll';
 
 class ChatBox extends React.Component {
 	state = {
@@ -40,6 +41,12 @@ class ChatBox extends React.Component {
 		}
 	};
 
+	scrollToBottom = () => {
+		animateScroll.scrollToBottom({
+			containerId: 'MessageList'
+		});
+	};
+
 	sendMessage = (event) => {
 		event.preventDefault();
 
@@ -56,6 +63,8 @@ class ChatBox extends React.Component {
 	};
 
 	componentDidMount = () => {
+		this.scrollToBottom();
+
 		axios.get(`/user/get-posts?channelId=${this.state.selectedChannel._id}`).then((result) => {
 			this.setState({ messages: result.data });
 		});
@@ -72,6 +81,7 @@ class ChatBox extends React.Component {
 	};
 
 	componentDidUpdate = (prevProps, prevState) => {
+		this.scrollToBottom();
 		if (prevState.selectedChannel._id !== this.state.selectedChannel._id) {
 			axios.get(`/user/get-posts?channelId=${this.state.selectedChannel._id}`).then((result) => {
 				this.setState({ messages: result.data });
@@ -119,8 +129,8 @@ class ChatBox extends React.Component {
 						</Form>
 					</Dimmer>
 					<div style={{ position: 'absolute', top: '10px', width: '96%' }}>
-						<Segment>
-							{this.state.selectedChannel.name}
+						<Segment style={{ backgroundColor: '#3f72af', color: 'white', fontSize: '16px' }}>
+							<b> {this.state.selectedChannel.name} </b>
 							{this.state.selectedChannel.createdBy === this.props.user._id ? (
 								<Popup
 									content="add people"
@@ -140,6 +150,7 @@ class ChatBox extends React.Component {
 						</Segment>
 					</div>
 					<div
+						id="MessageList"
 						style={{
 							top: '80px',
 							height: '75%',
@@ -160,9 +171,14 @@ class ChatBox extends React.Component {
 							style={{ width: '80%', float: 'left' }}
 						/>
 						<Button
-							primary
+							positive
 							icon
-							style={{ width: '15%', float: 'left', marginLeft: '10px' }}
+							style={{
+								width: '15%',
+								float: 'left',
+								marginLeft: '10px',
+								color: 'white'
+							}}
 							onClick={this.sendMessage}
 						>
 							SEND
