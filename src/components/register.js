@@ -20,12 +20,16 @@ class Register extends React.Component {
 
 	onSubmit = async () => {
 		if (this.validate()) {
-			await axios.post('/register', {
+			let result = await axios.post('/register', {
 				email: this.state.email,
 				username: this.state.username,
 				password: this.state.password,
 				region: this.state.region
 			});
+
+			if (result.data.error) {
+				this.setState({ error_email: result.data.error.email, error_username: result.data.error.username });
+			}
 			this.props.history.push('/login');
 		} else console.log('error');
 	};

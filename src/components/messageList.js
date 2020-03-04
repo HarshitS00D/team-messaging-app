@@ -9,7 +9,7 @@ const MessageList = ({ messages }) => {
 					<Item key={i}>
 						<Item.Content>
 							<div style={{ color: '#112d4e', fontSize: '16px', marginBottom: '10px' }}>
-								<Icon name="user outline small" /> <b> {message.username} </b>
+								<Icon name="user outline" /> <b> {message.username} </b>
 							</div>
 							{message.message}
 							<Label size="mini" style={{ marginLeft: '10px' }}>

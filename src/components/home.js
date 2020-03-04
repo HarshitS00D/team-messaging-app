@@ -97,7 +97,7 @@ class Home extends React.Component {
 			);
 		else if (this.state.isLogged && !this.state.isLoading)
 			return (
-				<div style={{ marginTop: '100px' }}>
+				<div style={{ marginTop: '20px' }}>
 					<Segment style={{ height: '80px' }}>
 						<Header style={{ float: 'left', padding: '5px', fontSize: '20px' }}>
 							<Image circular src="https://react.semantic-ui.com/images/avatar/large/jenny.jpg" />
@@ -157,23 +157,46 @@ class Home extends React.Component {
 						style={{
 							width: '25%',
 							float: 'left',
+							height: '600px',
 							overflowY: 'scroll',
-							overflowX: 'auto'
+							overflowX: 'auto',
+							backgroundColor: '#f7f7f7'
 						}}
 					>
-						<Segment placeholder style={{ height: '600px', fontWeight: 'bold', fontSize: '16px' }}>
-							<ChannelList
-								channels={this.state.channels}
-								onChannelSelect={this.onChannelSelect}
-								style={{ height: '600px' }}
-							/>
-						</Segment>
+						{this.state.channels.length ? (
+							<Segment placeholder style={{ backgroundColor: '#f7f7f7' }}>
+								<ChannelList channels={this.state.channels} onChannelSelect={this.onChannelSelect} />
+							</Segment>
+						) : (
+							<div
+								style={{
+									fontSize: '12px',
+									textAlign: 'center',
+									marginTop: '100%',
+									color: 'grey'
+								}}
+							>
+								No Channel to display
+							</div>
+						)}
 					</Segment.Group>
 
 					<Segment placeholder style={{ width: '75%', height: '600px', float: 'left' }}>
 						{this.state.selectedChannel ? (
 							<ChatBox selectedChannel={this.state.selectedChannel} user={this.state.user} />
-						) : null}
+						) : (
+							<div
+								style={{
+									fontSize: '12px',
+									display: 'flex',
+									justifyContent: 'center',
+									color: 'grey'
+								}}
+							>
+								{' '}
+								No Channel Selected
+							</div>
+						)}
 					</Segment>
 				</div>
 			);
