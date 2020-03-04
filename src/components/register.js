@@ -29,8 +29,7 @@ class Register extends React.Component {
 
 			if (result.data.error) {
 				this.setState({ error_email: result.data.error.email, error_username: result.data.error.username });
-			}
-			this.props.history.push('/login');
+			} else this.props.history.push('/login');
 		} else console.log('error');
 	};
 
