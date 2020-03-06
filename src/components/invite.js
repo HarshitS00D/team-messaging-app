@@ -47,7 +47,9 @@ class Invite extends React.Component {
 						invites={this.state.invites}
 					/>
 				) : (
-					<div style={{ textAlign: 'center', fontSize: '12px', color: 'grey' }}> NO INVITES</div>
+					<div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+						<div style={{ fontSize: '12px', color: 'grey' }}> NO INVITES</div>
+					</div>
 				)}
 			</Segment>
 		);
