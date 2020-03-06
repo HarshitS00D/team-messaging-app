@@ -192,13 +192,21 @@ class Home extends React.Component {
 								) : (
 									<div
 										style={{
-											fontSize: '12px',
-											textAlign: 'center',
-											marginTop: '100%',
-											color: 'grey'
+											height: '700px',
+											width: '100%',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center'
 										}}
 									>
-										NO CHANNEL TO DISPLAY
+										<div
+											style={{
+												fontSize: '12px',
+												color: 'grey'
+											}}
+										>
+											NO CHANNEL TO DISPLAY
+										</div>
 									</div>
 								)}
 							</Segment.Group>
