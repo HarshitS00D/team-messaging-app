@@ -10,7 +10,8 @@ class ChatBox extends React.Component {
 		addUsername: '',
 		addMessage: 'Add User',
 		message: '',
-		messages: []
+		messages: [],
+		isProcessing: false
 	};
 
 	constructor(props) {
@@ -31,11 +32,14 @@ class ChatBox extends React.Component {
 
 	onAddPeopleSubmit = async () => {
 		if (this.state.addUsername) {
-			let res = await axios.post('/user/addUser', {
+			this.setState({ isProcessing: true });
+			let res = await axios.post('/user/invite', {
 				username: this.state.addUsername,
-				channelId: this.state.selectedChannel._id
+				channelId: this.state.selectedChannel._id,
+				channelName: this.state.selectedChannel.name,
+				sentBy: this.props.user.username
 			});
-			this.setState({ addMessage: res.data.message });
+			this.setState({ addMessage: res.data.message, isProcessing: false });
 		} else {
 			this.setState({ addMessage: 'Enter a Username' });
 		}
@@ -51,7 +55,6 @@ class ChatBox extends React.Component {
 		event.preventDefault();
 
 		if (this.state.message) {
-			//console.log(this.state.message);
 			socket.emit(
 				'new_message',
 				this.state.message,
@@ -59,7 +62,7 @@ class ChatBox extends React.Component {
 				this.state.selectedChannel._id,
 				() => this.setState({ message: '' })
 			);
-		} //else console.log('empty');
+		}
 	};
 
 	componentDidMount = () => {
@@ -123,12 +126,18 @@ class ChatBox extends React.Component {
 								placeholder="Enter Username"
 								onChange={this.onInputChange}
 							/>
-							<Button primary onClick={this.onAddPeopleSubmit}>
-								Add
-							</Button>
+							{this.state.isProcessing ? (
+								<Button loading primary onClick={this.onAddPeopleSubmit}>
+									ADD
+								</Button>
+							) : (
+								<Button primary onClick={this.onAddPeopleSubmit}>
+									ADD
+								</Button>
+							)}
 						</Form>
 					</Dimmer>
-					<div style={{ position: 'absolute', top: '10px', width: '96%' }}>
+					<div style={{ position: 'absolute', top: '10px', width: '98%' }}>
 						<Segment style={{ backgroundColor: '#3f72af', color: 'white', fontSize: '16px' }}>
 							<b> {this.state.selectedChannel.name} </b>
 							{this.state.selectedChannel.createdBy === this.props.user._id ? (

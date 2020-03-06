@@ -1,6 +1,7 @@
 import React from 'react';
-import { Form, Input, Button, Message } from 'semantic-ui-react';
+import { Form, Input, Button, Message, Container } from 'semantic-ui-react';
 import axios from '../axios';
+import { Link } from 'react-router-dom';
 
 class Register extends React.Component {
 	state = {
@@ -11,7 +12,8 @@ class Register extends React.Component {
 		error_email: undefined,
 		error_username: undefined,
 		error_password: undefined,
-		error_region: undefined
+		error_region: undefined,
+		isLoading: false
 	};
 
 	onInputChange = (e, { name, value }) => {
@@ -20,6 +22,7 @@ class Register extends React.Component {
 
 	onSubmit = async () => {
 		if (this.validate()) {
+			this.setState({ isLoading: true });
 			let result = await axios.post('/register', {
 				email: this.state.email,
 				username: this.state.username,
@@ -30,6 +33,7 @@ class Register extends React.Component {
 			if (result.data.error) {
 				this.setState({ error_email: result.data.error.email, error_username: result.data.error.username });
 			} else this.props.history.push('/login');
+			this.setState({ isLoading: false });
 		} else console.log('error');
 	};
 
@@ -85,12 +89,11 @@ class Register extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<Container>
 				<h1>Register</h1>
 				<div className="ui vertical segment" />
 				<Form error style={{ marginTop: '20px' }}>
 					<Form.Field
-						label="Email"
 						name="email"
 						control={Input}
 						value={this.state.email}
@@ -99,7 +102,6 @@ class Register extends React.Component {
 					/>
 					<Message error content={this.state.error_email} />
 					<Form.Field
-						label="Username"
 						name="username"
 						control={Input}
 						value={this.state.username}
@@ -108,7 +110,6 @@ class Register extends React.Component {
 					/>
 					<Message error content={this.state.error_username} />
 					<Form.Field
-						label="Password"
 						name="password"
 						control={Input}
 						value={this.state.password}
@@ -118,7 +119,6 @@ class Register extends React.Component {
 					/>
 					<Message error content={this.state.error_password} />
 					<Form.Field
-						label="Region"
 						name="region"
 						control={Input}
 						value={this.state.region}
@@ -126,11 +126,21 @@ class Register extends React.Component {
 						placeholder="Region"
 					/>
 					<Message error content={this.state.error_region} />
-					<Button type="submit" onClick={this.onSubmit}>
-						Submit
-					</Button>
+					{this.state.isLoading ? (
+						<Button loading type="submit" onClick={this.onSubmit}>
+							Submit
+						</Button>
+					) : (
+						<Button type="submit" onClick={this.onSubmit}>
+							Submit
+						</Button>
+					)}
+
+					<Link to="/login">
+						<Button positive>Login</Button>
+					</Link>
 				</Form>
-			</div>
+			</Container>
 		);
 	}
 }

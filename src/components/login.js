@@ -1,12 +1,14 @@
 import React from 'react';
-import { Form, Input, Button, Message } from 'semantic-ui-react';
+import { Form, Input, Button, Message, Container } from 'semantic-ui-react';
 import axios from '../axios';
+import { Link } from 'react-router-dom';
 
 class Login extends React.Component {
 	state = {
 		username: '',
 		password: '',
-		error: undefined
+		error: undefined,
+		isLoading: false
 	};
 
 	onInputChange = (e, { name, value }) => {
@@ -15,11 +17,13 @@ class Login extends React.Component {
 
 	onSubmit = async () => {
 		if (this.validate()) {
+			this.setState({ isLoading: true });
 			let res = await axios.post('/login', { username: this.state.username, password: this.state.password });
 			if (res.data.length) {
 				sessionStorage.setItem('userid', res.data[0]._id);
 				this.props.history.push('/');
 			} else this.setState({ error: 'Invalid Email or Password' });
+			this.setState({ isLoading: false });
 		} else console.log('error');
 	};
 
@@ -50,7 +54,7 @@ class Login extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<Container>
 				<h1>Login</h1>
 				<Form error>
 					<Form.Field
@@ -69,11 +73,21 @@ class Login extends React.Component {
 						placeholder="password"
 					/>
 					<Message error content={this.state.error} />
-					<Button type="submit" onClick={this.onSubmit}>
-						Submit
-					</Button>
+					{this.state.isLoading ? (
+						<Button loading type="submit" onClick={this.onSubmit}>
+							Submit
+						</Button>
+					) : (
+						<Button type="submit" onClick={this.onSubmit}>
+							Submit
+						</Button>
+					)}
+
+					<Link to="/register">
+						<Button positive>Create a new account</Button>
+					</Link>
 				</Form>
-			</div>
+			</Container>
 		);
 	}
 }
