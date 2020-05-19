@@ -24,13 +24,9 @@ class ChatBox extends React.Component {
 		addMessage: 'Add User',
 		message: '',
 		messages: [],
-		isProcessing: false
+		isProcessing: false,
+		selectedChannel: this.props.selectedChannel
 	};
-
-	constructor(props) {
-		super(props);
-		this.state.selectedChannel = props.selectedChannel;
-	}
 
 	handleOpen = () => this.setState({ active: true });
 	handleClose = () => this.setState({ active: false, addUsername: '', addMessage: 'Add User' });
@@ -46,7 +42,12 @@ class ChatBox extends React.Component {
 		this.handleOpen();
 	};
 
-	onShowChannelInfo = () => {
+	onShowChannelInfo = async () => {
+		let res = await axios.get(`/channel/members?_id=${this.state.selectedChannel._id}`);
+		let channel = this.state.selectedChannel;
+		channel.members = res.data;
+		this.setState({ selectedChannel: channel });
+
 		this.handleOpenForChannelInfo();
 	};
 
@@ -162,7 +163,7 @@ class ChatBox extends React.Component {
 							<Message info header="Channel Info" content={this.state.selectedChannel.description} />
 							<Segment>
 								<List animated divided style={{ height: '600px', overflow: 'auto' }}>
-									<Header as="h3" dividind style={{ color: 'teal' }}>
+									<Header as="h3" style={{ color: 'teal' }}>
 										Members
 									</Header>
 									{this.state.selectedChannel.members.map((member, i) => {
