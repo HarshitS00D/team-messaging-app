@@ -5,16 +5,18 @@ import Home from './home';
 import Invite from './invite';
 import { Router, Switch, Route } from 'react-router-dom';
 import history from '../history';
-import { Divider } from 'semantic-ui-react';
+import { Divider, Image } from 'semantic-ui-react';
+import logo from '../logo.png';
 
 const App = () => {
 	return (
 		<div
 			style={{
-				padding: '80px 40px 80px 40px',
 				overflow: 'hidden'
 			}}
 		>
+			<Image centered src={logo} size="small" />
+
 			<Divider />
 			<Router history={history}>
 				<Switch>

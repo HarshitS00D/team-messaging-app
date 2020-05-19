@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Message, Container } from 'semantic-ui-react';
+import { Form, Input, Button, Message, Container, Divider } from 'semantic-ui-react';
 import axios from '../axios';
 import { Link } from 'react-router-dom';
 
@@ -54,39 +54,75 @@ class Login extends React.Component {
 
 	render() {
 		return (
-			<Container>
-				<h1>Login</h1>
-				<Form error>
-					<Form.Field
-						name="username"
-						control={Input}
-						value={this.state.username}
-						onChange={this.onInputChange}
-						placeholder="Username"
-					/>
-					<Form.Field
-						name="password"
-						control={Input}
-						value={this.state.password}
-						onChange={this.onInputChange}
-						type="password"
-						placeholder="password"
-					/>
-					<Message error content={this.state.error} />
-					{this.state.isLoading ? (
-						<Button loading type="submit" onClick={this.onSubmit}>
-							Submit
-						</Button>
-					) : (
-						<Button type="submit" onClick={this.onSubmit}>
-							Submit
-						</Button>
-					)}
+			<Container style={{ width: '400px' }}>
+				<center>
+					<h1 style={{ color: 'white', margin: '40px' }}>LOGIN</h1>
+					<Form error style={{ marginTop: '20px' }}>
+						<Form.Input
+							icon="user"
+							iconPosition="left"
+							transparent
+							style={{
+								background: '#673ab7',
+								border: '10px solid #673ab7',
+								borderRadius: '30px',
+								height: '50px',
+								fontSize: '16px'
+							}}
+							name="username"
+							value={this.state.username}
+							onChange={this.onInputChange}
+							placeholder="Username"
+						/>
+						<Form.Input
+							icon="lock"
+							iconPosition="left"
+							transparent
+							style={{
+								background: '#673ab7',
+								border: '10px solid #673ab7',
+								borderRadius: '30px',
+								height: '50px',
+								fontSize: '16px'
+							}}
+							control={Input}
+							name="password"
+							value={this.state.password}
+							onChange={this.onInputChange}
+							type="password"
+							placeholder="Password"
+						/>
+						<Message error content={this.state.error} />
+						{this.state.isLoading ? (
+							<Button
+								loading
+								type="submit"
+								onClick={this.onSubmit}
+								style={{ width: '400px', borderRadius: '25px' }}
+							>
+								Login
+							</Button>
+						) : (
+							<Button
+								type="submit"
+								onClick={this.onSubmit}
+								style={{ width: '400px', borderRadius: '25px', fontSize: '16px' }}
+							>
+								Login
+							</Button>
+						)}
 
-					<Link to="/register">
-						<Button positive>Create a new account</Button>
-					</Link>
-				</Form>
+						<Divider horizontal inverted>
+							Or
+						</Divider>
+
+						<Link to="/register">
+							<Button positive style={{ width: '400px', borderRadius: '25px', fontSize: '16px' }}>
+								Create a new account
+							</Button>
+						</Link>
+					</Form>
+				</center>
 			</Container>
 		);
 	}

@@ -1,5 +1,18 @@
 import React from 'react';
-import { Input, Button, Icon, Segment, Popup, Dimmer, Form, Message } from 'semantic-ui-react';
+import {
+	Input,
+	Button,
+	Icon,
+	Segment,
+	Popup,
+	Dimmer,
+	Form,
+	Message,
+	Dropdown,
+	List,
+	Header,
+	Container
+} from 'semantic-ui-react';
 import axios from '../axios';
 import MessageList from './messageList';
 import socket from '../socket';
@@ -22,12 +35,19 @@ class ChatBox extends React.Component {
 	handleOpen = () => this.setState({ active: true });
 	handleClose = () => this.setState({ active: false, addUsername: '', addMessage: 'Add User' });
 
+	handleOpenForChannelInfo = () => this.setState({ activeChannelInfo: true });
+	handleCloseForChannelInfo = () => this.setState({ activeChannelInfo: false });
+
 	onInputChange = (e, { name, value }) => {
 		this.setState({ [name]: value, addMessage: 'Add User' });
 	};
 
 	onAddPeople = () => {
 		this.handleOpen();
+	};
+
+	onShowChannelInfo = () => {
+		this.handleOpenForChannelInfo();
 	};
 
 	onAddPeopleSubmit = async () => {
@@ -110,7 +130,7 @@ class ChatBox extends React.Component {
 	};
 
 	render() {
-		const { active } = this.state;
+		const { active, activeChannelInfo } = this.state;
 
 		if (!this.state.selectedChannel) return <div />;
 		else
@@ -127,27 +147,65 @@ class ChatBox extends React.Component {
 								onChange={this.onInputChange}
 							/>
 							{this.state.isProcessing ? (
-								<Button loading primary onClick={this.onAddPeopleSubmit}>
+								<Button loading positive onClick={this.onAddPeopleSubmit}>
 									ADD
 								</Button>
 							) : (
-								<Button primary onClick={this.onAddPeopleSubmit}>
+								<Button positive onClick={this.onAddPeopleSubmit}>
 									ADD
 								</Button>
 							)}
 						</Form>
 					</Dimmer>
-					<div style={{ position: 'absolute', top: '10px', width: '98%' }}>
-						<Segment style={{ backgroundColor: '#3f72af', color: 'white', fontSize: '16px' }}>
+					<Dimmer active={activeChannelInfo} onClickOutside={this.handleCloseForChannelInfo} page>
+						<div style={{ width: '500px' }}>
+							<Message info header="Channel Info" content={this.state.selectedChannel.description} />
+							<Segment>
+								<List animated divided style={{ height: '600px', overflow: 'auto' }}>
+									<Header as="h3" dividind style={{ color: 'teal' }}>
+										Members
+									</Header>
+									{this.state.selectedChannel.members.map((member, i) => {
+										return (
+											<List.Item key={i} style={{ padding: '10px' }}>
+												<Icon color="blue" name="user circle" size="large" />
+												<List.Content as="h3" style={{ textAlign: 'initial' }}>
+													{this.state.selectedChannel.createdBy === member.username ? (
+														<List.Header>
+															{member.username + ' '}
+															<span style={{ color: 'red', fontWeight: 'normal' }}>
+																(admin)
+															</span>
+														</List.Header>
+													) : (
+														<List.Header> {member.username} </List.Header>
+													)}
+												</List.Content>
+											</List.Item>
+										);
+									})}
+								</List>
+							</Segment>
+						</div>
+					</Dimmer>
+					<Container style={{ position: 'absolute', top: '10px', width: '98%' }}>
+						<Segment style={{ backgroundColor: '#3f72af', color: 'white', fontSize: '18px' }}>
 							<b> {this.state.selectedChannel.name} </b>
-							{this.state.selectedChannel.createdBy === this.props.user._id ? (
+							<Dropdown icon="bars" floating labeled style={{ float: 'right' }}>
+								<Dropdown.Menu direction="left">
+									<Dropdown.Item onClick={this.onShowChannelInfo}> Channel Info </Dropdown.Item>
+								</Dropdown.Menu>
+							</Dropdown>
+							{this.state.selectedChannel.createdBy === this.props.user.username ? (
 								<Popup
 									content="add people"
 									trigger={
-										<Button
-											circular
-											icon="add"
-											style={{ float: 'right', padding: '5px' }}
+										<Icon
+											name="add"
+											style={{
+												float: 'right',
+												marginRight: '10px'
+											}}
 											onClick={this.onAddPeople}
 										/>
 									}
@@ -157,7 +215,7 @@ class ChatBox extends React.Component {
 								/>
 							) : null}
 						</Segment>
-					</div>
+					</Container>
 					<div
 						id="MessageList"
 						style={{
@@ -183,9 +241,9 @@ class ChatBox extends React.Component {
 							positive
 							icon
 							style={{
+								position: 'absolute',
+								right: '30px',
 								width: '15%',
-								float: 'left',
-								marginLeft: '10px',
 								color: 'white'
 							}}
 							onClick={this.sendMessage}

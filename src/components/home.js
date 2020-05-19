@@ -1,9 +1,10 @@
 import React from 'react';
-import { Button, Dimmer, Segment, Form, Icon, Input, Loader, Container, Message, Popup } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Button, Dimmer, Segment, Form, Icon, Input, Loader, Message, Popup } from 'semantic-ui-react';
+import { Redirect } from 'react-router-dom';
 import ChannelList from './channelList';
 import ChatBox from './chatBox';
 import Invite from './invite';
+import Trending from './trending';
 import SideBar from './sidebar';
 import axios from '../axios';
 import history from '../history';
@@ -49,7 +50,7 @@ class Home extends React.Component {
 			await axios.post('/create-channel', {
 				name: this.state.newChannelName,
 				description: this.state.newChannelDescription,
-				createdBy: this.state.user_id
+				createdBy: this.state.user.username
 			});
 			this.setState({ newChannelName: '', newChannelDescription: '' });
 			this.handleClose();
@@ -103,160 +104,176 @@ class Home extends React.Component {
 				<div style={{ marginTop: '20px' }}>
 					<SideBar user={this.state.user} changeActiveTab={this.changeActiveTab} logout={this.logout} />
 
-					{this.state.activeTab === 1 ? (
-						<div style={{ height: '700px', width: '90%', float: 'left' }}>
-							<Dimmer active={active} onClickOutside={this.handleClose} page>
-								<Form style={{ width: '500px' }}>
-									<Message info content={this.state.newChannelMessage} />
-									<Form.Field
-										name="newChannelName"
-										control={Input}
-										value={this.state.newChannelName}
-										placeholder="Channel Name"
-										onChange={this.onInputChange}
-									/>
-									<Form.Field
-										name="newChannelDescription"
-										control={Input}
-										value={this.state.newChannelDescription}
-										placeholder="Channel Description"
-										onChange={this.onInputChange}
-									/>
-									{this.state.isProcessing ? (
-										<Button loading primary onClick={this.onCreateChannelSubmit}>
-											CREATE
-										</Button>
-									) : (
-										<Button primary onClick={this.onCreateChannelSubmit}>
-											CREATE
-										</Button>
-									)}
-								</Form>
-							</Dimmer>
+					{
+						{
+							1: (
+								<div style={{ height: '700px', width: '90%', float: 'left' }}>
+									<Dimmer active={active} onClickOutside={this.handleClose} page>
+										<Form style={{ width: '500px' }}>
+											<Message info content={this.state.newChannelMessage} />
+											<Form.Field
+												name="newChannelName"
+												control={Input}
+												value={this.state.newChannelName}
+												placeholder="Channel Name"
+												onChange={this.onInputChange}
+											/>
+											<Form.Field
+												name="newChannelDescription"
+												control={Input}
+												value={this.state.newChannelDescription}
+												placeholder="Channel Description"
+												onChange={this.onInputChange}
+											/>
+											{this.state.isProcessing ? (
+												<Button loading positive onClick={this.onCreateChannelSubmit}>
+													CREATE
+												</Button>
+											) : (
+												<Button positive onClick={this.onCreateChannelSubmit}>
+													CREATE
+												</Button>
+											)}
+										</Form>
+									</Dimmer>
 
-							<Segment.Group
-								compact
-								style={{
-									width: '25%',
-									float: 'left',
-									height: '700px'
-								}}
-							>
-								<div
-									style={{
-										display: 'flex',
-										height: '80px',
-										alignItems: 'center'
-									}}
-								>
-									<div
-										style={{
-											position: 'absolute',
-											left: '30px',
-											fontWeight: 'bold',
-											fontSize: '22px',
-											color: '#3f72af'
-										}}
-									>
-										CHANNELS
-									</div>
-									<Popup
-										content="create channel"
-										trigger={
-											<Button
-												circular
-												onClick={this.onCreateChannel}
-												style={{ position: 'absolute', right: '20px' }}
-											>
-												<Icon name="add" style={{ margin: '0px' }} />
-											</Button>
-										}
-										inverted
-										offset="10px, 20px"
-										position="bottom center"
-									/>
-								</div>
-								{this.state.channels.length ? (
-									<Segment
-										placeholder
+									<Segment.Group
+										compact
 										style={{
 											backgroundColor: '#fff',
-											overflow: 'auto'
-										}}
-									>
-										<ChannelList
-											channels={this.state.channels}
-											onChannelSelect={this.onChannelSelect}
-										/>
-									</Segment>
-								) : (
-									<div
-										style={{
-											height: '700px',
-											width: '100%',
-											display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center'
+											width: '25%',
+											float: 'left',
+											height: '700px'
 										}}
 									>
 										<div
 											style={{
-												fontSize: '12px',
-												color: 'grey'
+												display: 'flex',
+												height: '80px',
+												alignItems: 'center'
 											}}
 										>
-											NO CHANNEL TO DISPLAY
+											<div
+												style={{
+													position: 'absolute',
+													left: '30px',
+													fontWeight: 'bold',
+													fontSize: '22px',
+													color: '#3f72af'
+												}}
+											>
+												CHANNELS
+											</div>
+											<Popup
+												content="create channel"
+												trigger={
+													<Button
+														circular
+														onClick={this.onCreateChannel}
+														style={{
+															position: 'absolute',
+															right: '20px'
+														}}
+													>
+														<Icon name="add" style={{ margin: '0px' }} />
+													</Button>
+												}
+												inverted
+												offset="10px, 20px"
+												position="bottom center"
+											/>
 										</div>
-									</div>
-								)}
-							</Segment.Group>
+										{this.state.channels.length ? (
+											<Segment
+												style={{
+													backgroundColor: '#fff',
+													overflow: 'auto'
+												}}
+											>
+												<ChannelList
+													channels={this.state.channels}
+													onChannelSelect={this.onChannelSelect}
+												/>
+											</Segment>
+										) : (
+											<div
+												style={{
+													height: '700px',
+													width: '100%',
+													display: 'flex',
+													justifyContent: 'center',
+													alignItems: 'center'
+												}}
+											>
+												<div
+													style={{
+														fontSize: '12px',
+														color: 'grey'
+													}}
+												>
+													NO CHANNEL TO DISPLAY
+												</div>
+											</div>
+										)}
+									</Segment.Group>
 
-							<Segment
-								placeholder
-								style={{ width: '75%', margin: '0px', height: '700px', float: 'left' }}
-							>
-								{this.state.selectedChannel ? (
-									<ChatBox selectedChannel={this.state.selectedChannel} user={this.state.user} />
-								) : (
-									<div
+									<Segment
+										placeholder
 										style={{
-											fontSize: '12px',
-											display: 'flex',
-											justifyContent: 'center',
-											color: 'grey'
+											backgroundColor: '#fff',
+											width: '75%',
+											margin: '0px',
+											height: '700px',
+											float: 'left'
 										}}
 									>
-										NO CHANNEL SELECTED
-									</div>
-								)}
-							</Segment>
-						</div>
-					) : (
-						<div
-							style={{
-								height: '700px',
-								width: '90%',
-								float: 'left'
-							}}
-						>
-							<Invite user={this.state.user} />
-						</div>
-					)}
+										{this.state.selectedChannel ? (
+											<ChatBox
+												selectedChannel={this.state.selectedChannel}
+												user={this.state.user}
+											/>
+										) : (
+											<div
+												style={{
+													fontSize: '12px',
+													display: 'flex',
+													justifyContent: 'center',
+													color: 'grey'
+												}}
+											>
+												NO CHANNEL SELECTED
+											</div>
+										)}
+									</Segment>
+								</div>
+							),
+							2: (
+								<div
+									style={{
+										height: '700px',
+										width: '90%',
+										float: 'left'
+									}}
+								>
+									<Invite user={this.state.user} />
+								</div>
+							),
+							3: (
+								<div
+									style={{
+										height: '700px',
+										width: '90%',
+										float: 'left'
+									}}
+								>
+									<Trending />
+								</div>
+							)
+						}[this.state.activeTab]
+					}
 				</div>
 			);
-		else
-			return (
-				<div>
-					<Container style={{ marginTop: '20px' }}>
-						<Link to="/login">
-							<Button primary>LOGIN</Button>
-						</Link>
-						<Link to="/register">
-							<Button secondary>REGISTER</Button>
-						</Link>
-					</Container>
-				</div>
-			);
+		else return <Redirect to="/login" />;
 	}
 }
 

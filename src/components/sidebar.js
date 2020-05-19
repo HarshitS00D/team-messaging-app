@@ -4,7 +4,16 @@ import { Button, Icon, Segment, Image } from 'semantic-ui-react';
 class SideBar extends React.Component {
 	render() {
 		return (
-			<Segment style={{ height: '700px', width: '10%', float: 'left', padding: '0px', margin: '0px' }}>
+			<Segment
+				style={{
+					backgroundColor: '#37474f',
+					height: '700px',
+					width: '10%',
+					float: 'left',
+					padding: '0px',
+					margin: '0px'
+				}}
+			>
 				<div
 					style={{
 						display: 'flex',
@@ -42,6 +51,17 @@ class SideBar extends React.Component {
 					<Button.Content hidden> INVITES </Button.Content>
 					<Button.Content visible>
 						<Icon name="envelope" size="large" />
+					</Button.Content>
+				</Button>
+				<Button
+					basic
+					animated
+					onClick={() => this.props.changeActiveTab(3)}
+					style={{ color: 'grey', width: '100%', height: '100px', backgroundColor: 'white' }}
+				>
+					<Button.Content hidden> TRENDING </Button.Content>
+					<Button.Content visible>
+						<Icon name="chart line" size="large" />
 					</Button.Content>
 				</Button>
 				<Button

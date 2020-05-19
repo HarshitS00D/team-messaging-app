@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Message, Container } from 'semantic-ui-react';
+import { Form, Input, Button, Message, Container, Divider } from 'semantic-ui-react';
 import axios from '../axios';
 import { Link } from 'react-router-dom';
 
@@ -89,57 +89,112 @@ class Register extends React.Component {
 
 	render() {
 		return (
-			<Container>
-				<h1>Register</h1>
-				<div className="ui vertical segment" />
-				<Form error style={{ marginTop: '20px' }}>
-					<Form.Field
-						name="email"
-						control={Input}
-						value={this.state.email}
-						onChange={this.onInputChange}
-						placeholder="Email"
-					/>
-					<Message error content={this.state.error_email} />
-					<Form.Field
-						name="username"
-						control={Input}
-						value={this.state.username}
-						onChange={this.onInputChange}
-						placeholder="Username"
-					/>
-					<Message error content={this.state.error_username} />
-					<Form.Field
-						name="password"
-						control={Input}
-						value={this.state.password}
-						onChange={this.onInputChange}
-						type="password"
-						placeholder="Password"
-					/>
-					<Message error content={this.state.error_password} />
-					<Form.Field
-						name="region"
-						control={Input}
-						value={this.state.region}
-						onChange={this.onInputChange}
-						placeholder="Region"
-					/>
-					<Message error content={this.state.error_region} />
-					{this.state.isLoading ? (
-						<Button loading type="submit" onClick={this.onSubmit}>
-							Submit
-						</Button>
-					) : (
-						<Button type="submit" onClick={this.onSubmit}>
-							Submit
-						</Button>
-					)}
+			<Container style={{ width: '400px' }}>
+				<center>
+					<h1 style={{ color: 'white', margin: '40px' }}>REGISTER</h1>
+					<Form error style={{ marginTop: '20px' }}>
+						<Form.Input
+							icon="mail"
+							iconPosition="left"
+							transparent
+							style={{
+								background: '#673ab7',
+								border: '10px solid #673ab7',
+								borderRadius: '30px',
+								height: '50px',
+								fontSize: '16px'
+							}}
+							name="email"
+							control={Input}
+							value={this.state.email}
+							onChange={this.onInputChange}
+							placeholder="Email"
+						/>
+						<Message error content={this.state.error_email} />
+						<Form.Input
+							icon="user"
+							iconPosition="left"
+							transparent
+							style={{
+								background: '#673ab7',
+								border: '10px solid #673ab7',
+								borderRadius: '30px',
+								height: '50px',
+								fontSize: '16px'
+							}}
+							name="username"
+							control={Input}
+							value={this.state.username}
+							onChange={this.onInputChange}
+							placeholder="Username"
+						/>
+						<Message error content={this.state.error_username} />
+						<Form.Input
+							icon="lock"
+							iconPosition="left"
+							transparent
+							style={{
+								background: '#673ab7',
+								border: '10px solid #673ab7',
+								borderRadius: '30px',
+								height: '50px',
+								fontSize: '16px'
+							}}
+							name="password"
+							control={Input}
+							value={this.state.password}
+							onChange={this.onInputChange}
+							type="password"
+							placeholder="Password"
+						/>
+						<Message error content={this.state.error_password} />
+						<Form.Input
+							transparent
+							icon="world"
+							iconPosition="left"
+							style={{
+								background: '#673ab7',
+								border: '10px solid #673ab7',
+								borderRadius: '30px',
+								height: '50px',
+								fontSize: '16px'
+							}}
+							name="region"
+							control={Input}
+							value={this.state.region}
+							onChange={this.onInputChange}
+							placeholder="Region"
+						/>
+						<Message error content={this.state.error_region} />
+						{this.state.isLoading ? (
+							<Button
+								loading
+								type="submit"
+								onClick={this.onSubmit}
+								style={{ width: '400px', borderRadius: '25px' }}
+							>
+								Submit
+							</Button>
+						) : (
+							<Button
+								type="submit"
+								onClick={this.onSubmit}
+								style={{ width: '400px', borderRadius: '25px', fontSize: '16px' }}
+							>
+								Submit
+							</Button>
+						)}
 
-					<Link to="/login">
-						<Button positive>Login</Button>
-					</Link>
-				</Form>
+						<Divider horizontal inverted>
+							Or
+						</Divider>
+						<Link to="/login">
+							<Button positive style={{ width: '400px', borderRadius: '25px', fontSize: '16px' }}>
+								Already have an account ?
+							</Button>
+						</Link>
+					</Form>
+				</center>
 			</Container>
 		);
 	}
