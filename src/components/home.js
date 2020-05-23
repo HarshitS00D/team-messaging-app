@@ -70,6 +70,13 @@ class Home extends React.Component {
 		this.setState({ channels: res.data });
 	};
 
+	leaveChannel = (channel) => {
+		let channelIndex = this.state.channels.findIndex((x) => x._id === channel._id);
+		let channels = this.state.channels;
+		channels.splice(channelIndex, 1);
+		this.setState({ channels, selectedChannel: null });
+	};
+
 	componentDidMount = async () => {
 		if (this.state.user_id) {
 			let res = await axios.get(`/get-user?id=${this.state.user_id}`);
@@ -229,6 +236,7 @@ class Home extends React.Component {
 									>
 										{this.state.selectedChannel ? (
 											<ChatBox
+												leaveChannel={this.leaveChannel}
 												selectedChannel={this.state.selectedChannel}
 												user={this.state.user}
 											/>

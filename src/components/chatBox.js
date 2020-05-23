@@ -11,7 +11,8 @@ import {
 	Dropdown,
 	List,
 	Header,
-	Container
+	Container,
+	Modal
 } from 'semantic-ui-react';
 import axios from '../axios';
 import MessageList from './messageList';
@@ -24,6 +25,7 @@ class ChatBox extends React.Component {
 		addMessage: 'Add User',
 		message: '',
 		messages: [],
+		activeDimmerTab: null,
 		isProcessing: false,
 		selectedChannel: this.props.selectedChannel
 	};
@@ -31,14 +33,15 @@ class ChatBox extends React.Component {
 	handleOpen = () => this.setState({ active: true });
 	handleClose = () => this.setState({ active: false, addUsername: '', addMessage: 'Add User' });
 
-	handleOpenForChannelInfo = () => this.setState({ activeChannelInfo: true });
-	handleCloseForChannelInfo = () => this.setState({ activeChannelInfo: false });
+	handleModalOpen = () => this.setState({ activeModal: true });
+	handleModalClose = () => this.setState({ activeModal: false });
 
 	onInputChange = (e, { name, value }) => {
 		this.setState({ [name]: value, addMessage: 'Add User' });
 	};
 
 	onAddPeople = () => {
+		this.setState({ activeDimmerTab: 1 });
 		this.handleOpen();
 	};
 
@@ -46,9 +49,8 @@ class ChatBox extends React.Component {
 		let res = await axios.get(`/channel/members?_id=${this.state.selectedChannel._id}`);
 		let channel = this.state.selectedChannel;
 		channel.members = res.data;
-		this.setState({ selectedChannel: channel });
-
-		this.handleOpenForChannelInfo();
+		this.setState({ selectedChannel: channel, activeDimmerTab: 2 });
+		this.handleOpen();
 	};
 
 	onAddPeopleSubmit = async () => {
@@ -64,6 +66,22 @@ class ChatBox extends React.Component {
 		} else {
 			this.setState({ addMessage: 'Enter a Username' });
 		}
+	};
+
+	onLeaveChannel = () => {
+		this.handleModalOpen();
+	};
+
+	onLeaveChannelSubmit = async () => {
+		axios
+			.post('/user/leave-channel', {
+				username: this.props.user.username,
+				channelId: this.state.selectedChannel._id
+			})
+			.then((result) => {
+				this.handleModalClose();
+				this.props.leaveChannel(this.state.selectedChannel);
+			});
 	};
 
 	scrollToBottom = () => {
@@ -131,70 +149,109 @@ class ChatBox extends React.Component {
 	};
 
 	render() {
-		const { active, activeChannelInfo } = this.state;
+		const { active, activeModal } = this.state;
 
 		if (!this.state.selectedChannel) return <div />;
 		else
 			return (
 				<div>
 					<Dimmer active={active} onClickOutside={this.handleClose} page>
-						<Form style={{ width: '500px' }}>
-							<Message info content={this.state.addMessage} />
-							<Form.Field
-								name="addUsername"
-								control={Input}
-								value={this.state.addUsername}
-								placeholder="Enter Username"
-								onChange={this.onInputChange}
+						{
+							{
+								1: (
+									<Form style={{ width: '500px' }}>
+										<Message info content={this.state.addMessage} />
+										<Form.Field
+											name="addUsername"
+											control={Input}
+											value={this.state.addUsername}
+											placeholder="Enter Username"
+											onChange={this.onInputChange}
+										/>
+										{this.state.isProcessing ? (
+											<Button loading positive onClick={this.onAddPeopleSubmit}>
+												ADD
+											</Button>
+										) : (
+											<Button positive onClick={this.onAddPeopleSubmit}>
+												ADD
+											</Button>
+										)}
+									</Form>
+								),
+								2: (
+									<div style={{ width: '500px' }}>
+										<Message
+											info
+											header="Channel Info"
+											content={this.state.selectedChannel.description}
+										/>
+										<Segment>
+											<List animated divided style={{ height: '600px', overflow: 'auto' }}>
+												<Header as="h3" style={{ color: 'teal' }}>
+													Members
+												</Header>
+												{this.state.selectedChannel.members.map((member, i) => {
+													return (
+														<List.Item key={i} style={{ padding: '10px' }}>
+															<Icon color="blue" name="user circle" size="large" />
+															<List.Content as="h3" style={{ textAlign: 'initial' }}>
+																{this.state.selectedChannel.createdBy ===
+																member.username ? (
+																	<List.Header>
+																		{member.username + ' '}
+																		<span
+																			style={{
+																				color: 'red',
+																				fontWeight: 'normal'
+																			}}
+																		>
+																			(admin)
+																		</span>
+																	</List.Header>
+																) : (
+																	<List.Header> {member.username} </List.Header>
+																)}
+															</List.Content>
+														</List.Item>
+													);
+												})}
+											</List>
+										</Segment>
+									</div>
+								)
+							}[this.state.activeDimmerTab]
+						}
+					</Dimmer>
+					<Modal open={activeModal} onClose={this.handleModalClose}>
+						<Modal.Header>Leave this Channel</Modal.Header>
+						<Modal.Content>
+							<p>Are you sure you want to leave this channel</p>
+						</Modal.Content>
+						<Modal.Actions>
+							<Button negative onClick={this.handleModalClose}>
+								No
+							</Button>
+							<Button
+								positive
+								onClick={this.onLeaveChannelSubmit}
+								icon="checkmark"
+								labelPosition="right"
+								content="Yes"
 							/>
-							{this.state.isProcessing ? (
-								<Button loading positive onClick={this.onAddPeopleSubmit}>
-									ADD
-								</Button>
-							) : (
-								<Button positive onClick={this.onAddPeopleSubmit}>
-									ADD
-								</Button>
-							)}
-						</Form>
-					</Dimmer>
-					<Dimmer active={activeChannelInfo} onClickOutside={this.handleCloseForChannelInfo} page>
-						<div style={{ width: '500px' }}>
-							<Message info header="Channel Info" content={this.state.selectedChannel.description} />
-							<Segment>
-								<List animated divided style={{ height: '600px', overflow: 'auto' }}>
-									<Header as="h3" style={{ color: 'teal' }}>
-										Members
-									</Header>
-									{this.state.selectedChannel.members.map((member, i) => {
-										return (
-											<List.Item key={i} style={{ padding: '10px' }}>
-												<Icon color="blue" name="user circle" size="large" />
-												<List.Content as="h3" style={{ textAlign: 'initial' }}>
-													{this.state.selectedChannel.createdBy === member.username ? (
-														<List.Header>
-															{member.username + ' '}
-															<span style={{ color: 'red', fontWeight: 'normal' }}>
-																(admin)
-															</span>
-														</List.Header>
-													) : (
-														<List.Header> {member.username} </List.Header>
-													)}
-												</List.Content>
-											</List.Item>
-										);
-									})}
-								</List>
-							</Segment>
-						</div>
-					</Dimmer>
+						</Modal.Actions>
+					</Modal>
 					<Container style={{ position: 'absolute', top: '10px', width: '98%' }}>
 						<Segment style={{ backgroundColor: '#3f72af', color: 'white', fontSize: '18px' }}>
 							<b> {this.state.selectedChannel.name} </b>
 							<Dropdown icon="bars" floating labeled style={{ float: 'right' }}>
 								<Dropdown.Menu direction="left">
 									<Dropdown.Item onClick={this.onShowChannelInfo}> Channel Info </Dropdown.Item>
+									{this.state.selectedChannel.createdBy === this.props.user.username ? (
+										<Dropdown.Item> Delete Channel </Dropdown.Item>
+									) : (
+										<Dropdown.Item onClick={this.onLeaveChannel}> Leave Channel </Dropdown.Item>
+									)}
 								</Dropdown.Menu>
 							</Dropdown>
 							{this.state.selectedChannel.createdBy === this.props.user.username ? (
