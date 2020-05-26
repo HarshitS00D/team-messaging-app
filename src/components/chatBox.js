@@ -247,9 +247,7 @@ class ChatBox extends React.Component {
 							<Dropdown icon="bars" floating labeled style={{ float: 'right' }}>
 								<Dropdown.Menu direction="left">
 									<Dropdown.Item onClick={this.onShowChannelInfo}> Channel Info </Dropdown.Item>
-									{this.state.selectedChannel.createdBy === this.props.user.username ? (
-										<Dropdown.Item> Delete Channel </Dropdown.Item>
-									) : (
+									{this.state.selectedChannel.createdBy === this.props.user.username ? null : (
 										<Dropdown.Item onClick={this.onLeaveChannel}> Leave Channel </Dropdown.Item>
 									)}
 								</Dropdown.Menu>
